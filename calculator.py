@@ -1,6 +1,13 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
+class custom_QTextEdit(QtWidgets.QTextEdit):
+    clicked = QtCore.pyqtSignal()
+
+    def mouseReleaseEvent(self, event):
+        self.clicked.emit()
+
+
 class Ui_Calculator(object):
     def setupUi(self, Calculator: QtWidgets.QWidget):
         Calculator.setObjectName("Calculator")
@@ -235,7 +242,7 @@ class Ui_Calculator(object):
         self.btn_power.setGeometry(QtCore.QRect(10, 214, 42, 34))
         self.btn_power.setObjectName("btn_power")
 
-        self.power_label = QtWidgets.QTextEdit(Calculator)
+        self.power_label = custom_QTextEdit(Calculator)
         self.power_label.setEnabled(True)
         self.power_label.setGeometry(QtCore.QRect(16, 218, 30, 26))
         font = QtGui.QFont()
@@ -248,6 +255,7 @@ class Ui_Calculator(object):
         self.power_label.setObjectName("power_label")
         self.power_label.setCursor(QtCore.Qt.ArrowCursor)
         self.power_label.viewport().setCursor(QtCore.Qt.ArrowCursor)
+        self.power_label.clicked.connect(lambda: self.btn_power.animateClick())
         self.power_label.setHtml(QtCore.QCoreApplication.translate("Calculator", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
                                                                    "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
                                                                    "p, li { white-space: pre-wrap; }\n"
