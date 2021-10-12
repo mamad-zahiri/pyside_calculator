@@ -39,21 +39,23 @@ class Ui_Calculator(object):
 
         self.change_mode_buttonGroup = QtWidgets.QButtonGroup(Calculator)
         self.change_mode_buttonGroup.setObjectName("change_mode_buttonGroup")
+        self.change_mode_buttonGroup.buttonToggled.connect(
+            self.programing_simple_mode_changer)
 
-        self.Programing_mode = QtWidgets.QRadioButton(
+        self.programing_mode = QtWidgets.QRadioButton(
             Calculator, text="Programing")
-        self.Programing_mode.setGeometry(QtCore.QRect(20, 63, 81, 22))
-        self.Programing_mode.setFont(font)
-        self.Programing_mode.setStyleSheet(change_mode_stylesheet)
-        self.Programing_mode.setChecked(True)
-        self.Programing_mode.setObjectName("Programing_mode")
-        self.change_mode_buttonGroup.addButton(self.Programing_mode)
+        self.programing_mode.setGeometry(QtCore.QRect(20, 63, 81, 22))
+        self.programing_mode.setFont(font)
+        self.programing_mode.setStyleSheet(change_mode_stylesheet)
+        self.programing_mode.setChecked(False)
+        self.programing_mode.setObjectName("programing_mode")
+        self.change_mode_buttonGroup.addButton(self.programing_mode)
 
         self.simple_mode = QtWidgets.QRadioButton(Calculator, text="Simple")
         self.simple_mode.setGeometry(QtCore.QRect(100, 63, 51, 22))
         self.simple_mode.setFont(font)
         self.simple_mode.setStyleSheet(change_mode_stylesheet)
-        self.simple_mode.setChecked(False)
+        self.simple_mode.setChecked(True)
         self.simple_mode.setObjectName("simple_mode")
         self.change_mode_buttonGroup.addButton(self.simple_mode)
 
@@ -312,6 +314,77 @@ class Ui_Calculator(object):
         self.btn_change_sign.setObjectName("btn_change_sign")
 
         QtCore.QMetaObject.connectSlotsByName(Calculator)
+        self.programing_simple_mode_changer()
+
+    def programing_simple_mode_changer(self):
+        if self.simple_mode.isChecked():
+            # Enable base changer
+            self.Binary.setDisabled(True)
+            self.Octal.setDisabled(True)
+            self.Hexadecimal.setDisabled(True)
+            # toggle to Decimal numbers
+            self.Decimal.toggle()
+            # Disable bitwise operarors
+            self.btn_and.setDisabled(True)
+            self.btn_or.setDisabled(True)
+            self.btn_xor.setDisabled(True)
+            self.btn_right_shift.setDisabled(True)
+            self.btn_left_shift.setDisabled(True)
+            self.btn_a.setDisabled(True)
+            self.btn_b.setDisabled(True)
+            self.btn_c.setDisabled(True)
+            self.btn_d.setDisabled(True)
+            self.btn_e.setDisabled(True)
+            self.btn_f.setDisabled(True)
+            # Enable aritاmetic operarors
+            self.btn_factorial.setEnabled(True)
+            self.btn_opening_parenthesis.setEnabled(True)
+            self.btn_closing_parenthesis.setEnabled(True)
+            self.btn_precent.setEnabled(True)
+            self.btn_power.setEnabled(True)
+            self.power_label.setEnabled(True)
+            self.btn_log.setEnabled(True)
+            self.btn_mod.setEnabled(True)
+            self.btn_sin.setEnabled(True)
+            self.btn_cos.setEnabled(True)
+            self.btn_tan.setEnabled(True)
+            self.btn_sinh.setEnabled(True)
+            self.btn_cosh.setEnabled(True)
+            self.btn_tanh.setEnabled(True)
+            self.btn_dot.setEnabled(True)
+        else:
+            # Enable base changer
+            self.Binary.setEnabled(True)
+            self.Octal.setEnabled(True)
+            self.Hexadecimal.setEnabled(True)
+            # Enable bitwise operators
+            self.btn_and.setEnabled(True)
+            self.btn_or.setEnabled(True)
+            self.btn_xor.setEnabled(True)
+            self.btn_right_shift.setEnabled(True)
+            self.btn_left_shift.setEnabled(True)
+            self.btn_a.setEnabled(True)
+            self.btn_b.setEnabled(True)
+            self.btn_c.setEnabled(True)
+            self.btn_d.setEnabled(True)
+            self.btn_e.setEnabled(True)
+            self.btn_f.setEnabled(True)
+            # Disable arithmetic operators
+            self.btn_factorial.setDisabled(True)
+            self.btn_opening_parenthesis.setDisabled(True)
+            self.btn_closing_parenthesis.setDisabled(True)
+            self.btn_precent.setDisabled(True)
+            self.btn_power.setDisabled(True)
+            self.power_label.setDisabled(True)
+            self.btn_log.setDisabled(True)
+            self.btn_mod.setDisabled(True)
+            self.btn_sin.setDisabled(True)
+            self.btn_cos.setDisabled(True)
+            self.btn_tan.setDisabled(True)
+            self.btn_sinh.setDisabled(True)
+            self.btn_cosh.setDisabled(True)
+            self.btn_tanh.setDisabled(True)
+            self.btn_dot.setDisabled(True)
 
 
 if __name__ == "__main__":
