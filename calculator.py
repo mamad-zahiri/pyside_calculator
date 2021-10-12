@@ -61,6 +61,8 @@ class Ui_Calculator(object):
 
         self.number_base_buttonGroup = QtWidgets.QButtonGroup(Calculator)
         self.number_base_buttonGroup.setObjectName("number_base_buttonGroup")
+        self.number_base_buttonGroup.buttonToggled.connect(
+            self.number_base_changer)
 
         self.Binary = QtWidgets.QRadioButton(Calculator, text="Bin")
         self.Binary.setEnabled(True)
@@ -385,6 +387,82 @@ class Ui_Calculator(object):
             self.btn_cosh.setDisabled(True)
             self.btn_tanh.setDisabled(True)
             self.btn_dot.setDisabled(True)
+
+    def number_base_changer(self):
+        if self.Binary.isChecked():
+            self.btn_0.setEnabled(True)
+            self.btn_1.setEnabled(True)
+            # Disable other digits
+            self.btn_2.setDisabled(True)
+            self.btn_3.setDisabled(True)
+            self.btn_4.setDisabled(True)
+            self.btn_5.setDisabled(True)
+            self.btn_6.setDisabled(True)
+            self.btn_7.setDisabled(True)
+            self.btn_8.setDisabled(True)
+            self.btn_9.setDisabled(True)
+            self.btn_a.setDisabled(True)
+            self.btn_b.setDisabled(True)
+            self.btn_c.setDisabled(True)
+            self.btn_d.setDisabled(True)
+            self.btn_e.setDisabled(True)
+            self.btn_f.setDisabled(True)
+
+        elif self.Octal.isChecked():
+            self.btn_0.setEnabled(True)
+            self.btn_1.setEnabled(True)
+            self.btn_2.setEnabled(True)
+            self.btn_3.setEnabled(True)
+            self.btn_4.setEnabled(True)
+            self.btn_5.setEnabled(True)
+            self.btn_6.setEnabled(True)
+            self.btn_7.setEnabled(True)
+            # Disable other digits
+            self.btn_8.setDisabled(True)
+            self.btn_9.setDisabled(True)
+            self.btn_a.setDisabled(True)
+            self.btn_b.setDisabled(True)
+            self.btn_c.setDisabled(True)
+            self.btn_d.setDisabled(True)
+            self.btn_e.setDisabled(True)
+            self.btn_f.setDisabled(True)
+
+        elif self.Decimal.isChecked():
+            self.btn_0.setEnabled(True)
+            self.btn_1.setEnabled(True)
+            self.btn_2.setEnabled(True)
+            self.btn_3.setEnabled(True)
+            self.btn_4.setEnabled(True)
+            self.btn_5.setEnabled(True)
+            self.btn_6.setEnabled(True)
+            self.btn_7.setEnabled(True)
+            self.btn_8.setEnabled(True)
+            self.btn_9.setEnabled(True)
+            # Disable other digits
+            self.btn_a.setDisabled(True)
+            self.btn_b.setDisabled(True)
+            self.btn_c.setDisabled(True)
+            self.btn_d.setDisabled(True)
+            self.btn_e.setDisabled(True)
+            self.btn_f.setDisabled(True)
+
+        else:
+            self.btn_0.setEnabled(True)
+            self.btn_1.setEnabled(True)
+            self.btn_2.setEnabled(True)
+            self.btn_3.setEnabled(True)
+            self.btn_4.setEnabled(True)
+            self.btn_5.setEnabled(True)
+            self.btn_6.setEnabled(True)
+            self.btn_7.setEnabled(True)
+            self.btn_8.setEnabled(True)
+            self.btn_9.setEnabled(True)
+            self.btn_a.setEnabled(True)
+            self.btn_b.setEnabled(True)
+            self.btn_c.setEnabled(True)
+            self.btn_d.setEnabled(True)
+            self.btn_e.setEnabled(True)
+            self.btn_f.setEnabled(True)
 
 
 if __name__ == "__main__":
