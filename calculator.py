@@ -15,7 +15,13 @@ class Ui_Calculator(object):
         Calculator.resize(311, 378)
         Calculator.setStyleSheet("background: white;")
 
-        self.output = QtWidgets.QLabel(Calculator)
+        # Each input from buttons will parsed and stored in this list
+        # e.g:
+        #       12 + 1 / 3 ^ 4 - sin(30) * 7 - 4!
+        #       ['12', '+', '1', '/', '3', '**', '4', '-', 'np.sin(30 / 180 * PI)', '*', '7', '-', 'np.math.factorial(4)']
+        self.parsed_input = []
+
+        self.output = QtWidgets.QLabel(Calculator, text="0")
         self.output.setGeometry(QtCore.QRect(11, 11, 290, 44))
         font = QtGui.QFont()
         font.setFamily("Noto Sans")
@@ -182,7 +188,10 @@ class Ui_Calculator(object):
         self.line.setFrameShape(QtWidgets.QFrame.VLine)
         self.line.setObjectName("line")
 
-        self.btn_clear = QtWidgets.QPushButton(Calculator, text="×")
+        self.btn_clear = QtWidgets.QPushButton(
+            Calculator,
+            text="×",
+            clicked=self._btn_clear)
         self.btn_clear.setGeometry(QtCore.QRect(20, 23, 20, 20))
         self.btn_clear.setStyleSheet("QPushButton {\n"
                                      "background-color: #ccc;\n"
@@ -318,9 +327,13 @@ class Ui_Calculator(object):
         QtCore.QMetaObject.connectSlotsByName(Calculator)
         self.programing_simple_mode_changer()
 
+    def _btn_clear(self):
+        self.output.setText("0")
+        self.parsed_input.clear()
+
     def programing_simple_mode_changer(self):
         if self.simple_mode.isChecked():
-            # Enable base changer
+            # Disable base changer
             self.Binary.setDisabled(True)
             self.Octal.setDisabled(True)
             self.Hexadecimal.setDisabled(True)
