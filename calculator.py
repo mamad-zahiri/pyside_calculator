@@ -468,6 +468,7 @@ class Ui_Calculator(object):
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
+    app.setStyle("Fusion")
     Calculator = QtWidgets.QWidget()
     ui = Ui_Calculator()
     ui.setupUi(Calculator)
