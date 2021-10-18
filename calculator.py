@@ -249,7 +249,10 @@ class Ui_Calculator(object):
                                      "}")
         self.btn_clear.setObjectName("btn_clear")
 
-        self.btn_remove_last = QtWidgets.QPushButton(Calculator, text="←")
+        self.btn_remove_last = QtWidgets.QPushButton(
+            Calculator,
+            text="←",
+            clicked=lambda: self._btn_remove_last())
         self.btn_remove_last.setGeometry(QtCore.QRect(260, 334, 41, 34))
         self.btn_remove_last.setObjectName("btn_remove_last")
 
@@ -376,6 +379,13 @@ class Ui_Calculator(object):
 
     def _btn_clear(self):
         self.output.setText("0")
+
+    def _btn_remove_last(self):
+        current_number = self.output.text()
+        if len(current_number) > 1:
+            self.output.setText(current_number[:-1])
+        else:
+            self.output.setText('0')
 
     def _btn_digit(self, current_number, new_number):
         if current_number in ['0', '-0']:
