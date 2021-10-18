@@ -222,7 +222,10 @@ class Ui_Calculator(object):
         self.btn_0.setGeometry(QtCore.QRect(160, 294, 40, 34))
         self.btn_0.setObjectName("btn_0")
 
-        self.btn_dot = QtWidgets.QPushButton(Calculator, text=".")
+        self.btn_dot = QtWidgets.QPushButton(
+            Calculator,
+            text=".",
+            clicked=lambda: self._btn_dot())
         self.btn_dot.setGeometry(QtCore.QRect(210, 294, 41, 34))
         self.btn_dot.setObjectName("btn_dot")
 
@@ -379,6 +382,11 @@ class Ui_Calculator(object):
             self.output.setText(f'{current_number[:-1]+new_number}')
         else:
             self.output.setText(f'{current_number+new_number}')
+
+    def _btn_dot(self):
+        current_number = self.output.text()
+        if '.' not in current_number:
+            self.output.setText(f'{current_number}.')
 
     def programing_simple_mode_changer(self):
         if self.simple_mode.isChecked():
