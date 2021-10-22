@@ -1,4 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+import numpy as np
 
 
 class custom_QTextEdit(QtWidgets.QTextEdit):
@@ -281,15 +282,24 @@ class Ui_Calculator(object):
         self.btn_left_shift.setGeometry(QtCore.QRect(210, 334, 41, 34))
         self.btn_left_shift.setObjectName("btn_left_shift")
 
-        self.btn_tan = QtWidgets.QPushButton(Calculator, text="tan")
+        self.btn_tan = QtWidgets.QPushButton(
+            Calculator,
+            text="tan",
+            clicked=lambda: self._btn_trigonometry('tan'))
         self.btn_tan.setGeometry(QtCore.QRect(110, 254, 41, 34))
         self.btn_tan.setObjectName("btn_tan")
 
-        self.btn_cosh = QtWidgets.QPushButton(Calculator, text="cosh")
+        self.btn_cosh = QtWidgets.QPushButton(
+            Calculator,
+            text="cosh",
+            clicked=lambda: self._btn_trigonometry('cosh'))
         self.btn_cosh.setGeometry(QtCore.QRect(60, 294, 41, 34))
         self.btn_cosh.setObjectName("btn_cosh")
 
-        self.btn_factorial = QtWidgets.QPushButton(Calculator, text="x!")
+        self.btn_factorial = QtWidgets.QPushButton(
+            Calculator,
+            text="x!",
+            clicked=lambda: self._btn_factorial())
         self.btn_factorial.setGeometry(QtCore.QRect(110, 134, 41, 34))
         self.btn_factorial.setObjectName("btn_factorial")
 
@@ -301,7 +311,9 @@ class Ui_Calculator(object):
         self.btn_minus.setObjectName("btn_minus")
 
         self.btn_pi_number = QtWidgets.QPushButton(
-            Calculator, text="π")
+            Calculator,
+            text="π",
+            clicked=lambda: self._btn_digit(f'{round(np.pi, 10)}'))
         self.btn_pi_number.setGeometry(QtCore.QRect(60, 174, 41, 34))
         self.btn_pi_number.setObjectName("btn_pi_number")
 
@@ -338,12 +350,17 @@ class Ui_Calculator(object):
                                                                    "</style></head><body style=\" font-family:\'Ubuntu\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
                                                                    "<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Noto Sans\';\">x</span><span style=\" font-family:\'Noto Sans\'; vertical-align:super;\">n</span></p></body></html>"))
 
-        self.btn_cos = QtWidgets.QPushButton(Calculator, text="cos")
+        self.btn_cos = QtWidgets.QPushButton(
+            Calculator,
+            text="cos",
+            clicked=lambda: self._btn_trigonometry('cos'))
         self.btn_cos.setGeometry(QtCore.QRect(60, 254, 41, 34))
         self.btn_cos.setObjectName("btn_cos")
 
         self.btn_euler_number = QtWidgets.QPushButton(
-            Calculator, text="e")
+            Calculator,
+            text="e",
+            clicked=lambda: self._btn_digit(f'{round(np.e, 10)}'))
         self.btn_euler_number.setGeometry(QtCore.QRect(10, 174, 41, 34))
         self.btn_euler_number.setObjectName("btn_euler_number")
 
@@ -354,7 +371,10 @@ class Ui_Calculator(object):
         self.btn_plus.setGeometry(QtCore.QRect(10, 94, 41, 34))
         self.btn_plus.setObjectName("btn_plus")
 
-        self.btn_sin = QtWidgets.QPushButton(Calculator, text="sin")
+        self.btn_sin = QtWidgets.QPushButton(
+            Calculator,
+            text="sin",
+            clicked=lambda: self._btn_trigonometry('sin'))
         self.btn_sin.setGeometry(QtCore.QRect(10, 254, 41, 34))
         self.btn_sin.setObjectName("btn_sin")
 
@@ -379,15 +399,24 @@ class Ui_Calculator(object):
         self.btn_precent.setGeometry(QtCore.QRect(110, 174, 41, 34))
         self.btn_precent.setObjectName("btn_precent")
 
-        self.btn_log = QtWidgets.QPushButton(Calculator, text="log")
+        self.btn_log = QtWidgets.QPushButton(
+            Calculator,
+            text="log",
+            clicked=lambda: self._btn_log())
         self.btn_log.setGeometry(QtCore.QRect(60, 214, 41, 34))
         self.btn_log.setObjectName("btn_log")
 
-        self.btn_sinh = QtWidgets.QPushButton(Calculator, text="sinh")
+        self.btn_sinh = QtWidgets.QPushButton(
+            Calculator,
+            text="sinh",
+            clicked=lambda: self._btn_trigonometry('sinh'))
         self.btn_sinh.setGeometry(QtCore.QRect(10, 294, 41, 34))
         self.btn_sinh.setObjectName("btn_sinh")
 
-        self.btn_tanh = QtWidgets.QPushButton(Calculator, text="tanh")
+        self.btn_tanh = QtWidgets.QPushButton(
+            Calculator,
+            text="tanh",
+            clicked=lambda: self._btn_trigonometry('tanh'))
         self.btn_tanh.setGeometry(QtCore.QRect(110, 294, 41, 34))
         self.btn_tanh.setObjectName("btn_tanh")
 
@@ -469,6 +498,21 @@ class Ui_Calculator(object):
             self.last_number = self.curr_number
             self.last_operator = operator
             self.curr_number = ''
+
+    def _btn_trigonometry(self, func):
+        self._btn_equal()
+        self.last_number = f"{eval(f'round(np.{func}((np.pi/180) * {self.last_number}), 3)')}"
+        self._btn_equal()
+
+    def _btn_log(self):
+        self._btn_equal()
+        self.last_number = f"{eval(f'np.log({self.last_number})')}"
+        self._btn_equal()
+
+    def _btn_factorial(self):
+        self._btn_equal()
+        self.last_number = f"{eval(f'np.math.gamma({self.last_number}+1)')}"
+        self._btn_equal()
 
     def _btn_change_sign(self):
         if self.curr_number != '':
