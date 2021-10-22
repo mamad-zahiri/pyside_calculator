@@ -398,7 +398,10 @@ class Ui_Calculator(object):
         self.btn_equal.setGeometry(QtCore.QRect(260, 294, 41, 34))
         self.btn_equal.setObjectName("btn_equal")
 
-        self.btn_change_sign = QtWidgets.QPushButton(Calculator, text="-/+")
+        self.btn_change_sign = QtWidgets.QPushButton(
+            Calculator,
+            text="-/+",
+            clicked=lambda: self._btn_change_sign())
         self.btn_change_sign.setGeometry(QtCore.QRect(110, 94, 41, 34))
         self.btn_change_sign.setObjectName("btn_change_sign")
 
@@ -466,6 +469,21 @@ class Ui_Calculator(object):
             self.last_number = self.curr_number
             self.last_operator = operator
             self.curr_number = ''
+
+    def _btn_change_sign(self):
+        if self.curr_number != '':
+            if self.curr_number[0] == '-':
+                self.curr_number = self.curr_number[1:]
+            else:
+                self.curr_number = f'-{self.curr_number}'
+
+        elif self.last_number != '':
+            if self.last_number[0] == '-':
+                self.last_number = self.last_number[1:]
+            else:
+                self.last_number = f'-{self.last_number}'
+
+        self._btn_equal()
 
     def _btn_equal(self):
         if self.last_number == '':
