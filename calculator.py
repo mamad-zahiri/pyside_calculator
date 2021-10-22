@@ -15,6 +15,11 @@ class Ui_Calculator(object):
         Calculator.resize(311, 378)
         Calculator.setStyleSheet("background: white;")
 
+        # stores last number and operator
+        self.curr_number = ''
+        self.last_number = ''
+        self.last_operator = ''
+
         self.output = QtWidgets.QLabel(Calculator, text="0")
         self.output.setGeometry(QtCore.QRect(11, 11, 290, 44))
         font = QtGui.QFont()
@@ -113,112 +118,112 @@ class Ui_Calculator(object):
         self.btn_d = QtWidgets.QPushButton(
             Calculator,
             text="d",
-            clicked=lambda: self._btn_digit(self.output.text(), 'd'))
+            clicked=lambda: self._btn_digit('D'))
         self.btn_d.setGeometry(QtCore.QRect(160, 94, 41, 34))
         self.btn_d.setObjectName("btn_d")
 
         self.btn_e = QtWidgets.QPushButton(
             Calculator,
             text="e",
-            clicked=lambda: self._btn_digit(self.output.text(), 'e'))
+            clicked=lambda: self._btn_digit('E'))
         self.btn_e.setGeometry(QtCore.QRect(210, 94, 41, 34))
         self.btn_e.setObjectName("btn_e")
 
         self.btn_f = QtWidgets.QPushButton(
             Calculator,
             text="f",
-            clicked=lambda: self._btn_digit(self.output.text(), 'f'))
+            clicked=lambda: self._btn_digit('F'))
         self.btn_f.setGeometry(QtCore.QRect(260, 94, 41, 34))
         self.btn_f.setObjectName("btn_f")
 
         self.btn_a = QtWidgets.QPushButton(
             Calculator,
             text="a",
-            clicked=lambda: self._btn_digit(self.output.text(), 'a'))
+            clicked=lambda: self._btn_digit('A'))
         self.btn_a.setGeometry(QtCore.QRect(160, 134, 41, 34))
         self.btn_a.setObjectName("btn_a")
 
         self.btn_b = QtWidgets.QPushButton(
             Calculator,
             text="b",
-            clicked=lambda: self._btn_digit(self.output.text(), 'b'))
+            clicked=lambda: self._btn_digit('B'))
         self.btn_b.setGeometry(QtCore.QRect(210, 134, 41, 34))
         self.btn_b.setObjectName("btn_b")
 
         self.btn_c = QtWidgets.QPushButton(
             Calculator,
             text="c",
-            clicked=lambda: self._btn_digit(self.output.text(), 'c'))
+            clicked=lambda: self._btn_digit('C'))
         self.btn_c.setGeometry(QtCore.QRect(260, 134, 41, 34))
         self.btn_c.setObjectName("btn_c")
 
         self.btn_7 = QtWidgets.QPushButton(
             Calculator,
             text="7",
-            clicked=lambda: self._btn_digit(self.output.text(), '7'))
+            clicked=lambda: self._btn_digit('7'))
         self.btn_7.setGeometry(QtCore.QRect(160, 174, 41, 34))
         self.btn_7.setObjectName("btn_7")
 
         self.btn_8 = QtWidgets.QPushButton(
             Calculator,
             text="8",
-            clicked=lambda: self._btn_digit(self.output.text(), '8'))
+            clicked=lambda: self._btn_digit('8'))
         self.btn_8.setGeometry(QtCore.QRect(210, 174, 41, 34))
         self.btn_8.setObjectName("btn_8")
 
         self.btn_9 = QtWidgets.QPushButton(
             Calculator,
             text="9",
-            clicked=lambda: self._btn_digit(self.output.text(), '9'))
+            clicked=lambda: self._btn_digit('9'))
         self.btn_9.setGeometry(QtCore.QRect(260, 174, 41, 34))
         self.btn_9.setObjectName("btn_9")
 
         self.btn_4 = QtWidgets.QPushButton(
             Calculator,
             text="4",
-            clicked=lambda: self._btn_digit(self.output.text(), '4'))
+            clicked=lambda: self._btn_digit('4'))
         self.btn_4.setGeometry(QtCore.QRect(160, 214, 41, 34))
         self.btn_4.setObjectName("btn_4")
 
         self.btn_5 = QtWidgets.QPushButton(
             Calculator,
             text="5",
-            clicked=lambda: self._btn_digit(self.output.text(), '5'))
+            clicked=lambda: self._btn_digit('5'))
         self.btn_5.setGeometry(QtCore.QRect(210, 214, 41, 34))
         self.btn_5.setObjectName("btn_5")
 
         self.btn_6 = QtWidgets.QPushButton(
             Calculator,
             text="6",
-            clicked=lambda: self._btn_digit(self.output.text(), '6'))
+            clicked=lambda: self._btn_digit('6'))
         self.btn_6.setGeometry(QtCore.QRect(260, 214, 41, 34))
         self.btn_6.setObjectName("btn_6")
 
         self.btn_1 = QtWidgets.QPushButton(
             Calculator,
             text="1",
-            clicked=lambda: self._btn_digit(self.output.text(), '1'))
+            clicked=lambda: self._btn_digit('1'))
         self.btn_1.setGeometry(QtCore.QRect(160, 254, 41, 34))
         self.btn_1.setObjectName("btn_1")
 
         self.btn_2 = QtWidgets.QPushButton(
             Calculator,
             text="2",
-            clicked=lambda: self._btn_digit(self.output.text(), '2'))
+            clicked=lambda: self._btn_digit('2'))
         self.btn_2.setGeometry(QtCore.QRect(210, 254, 41, 34))
         self.btn_2.setObjectName("btn_2")
 
         self.btn_3 = QtWidgets.QPushButton(
             Calculator,
             text="3",
-            clicked=lambda: self._btn_digit(self.output.text(), '3'))
+            clicked=lambda: self._btn_digit('3'))
         self.btn_3.setGeometry(QtCore.QRect(260, 254, 41, 34))
         self.btn_3.setObjectName("btn_3")
 
         self.btn_0 = QtWidgets.QPushButton(
             Calculator,
             text="0",
-            clicked=lambda: self._btn_digit(self.output.text(), '0'))
+            clicked=lambda: self._btn_digit('0'))
         self.btn_0.setGeometry(QtCore.QRect(160, 294, 40, 34))
         self.btn_0.setObjectName("btn_0")
 
@@ -288,20 +293,28 @@ class Ui_Calculator(object):
         self.btn_factorial.setGeometry(QtCore.QRect(110, 134, 41, 34))
         self.btn_factorial.setObjectName("btn_factorial")
 
-        self.btn_minus = QtWidgets.QPushButton(Calculator, text="-")
+        self.btn_minus = QtWidgets.QPushButton(
+            Calculator,
+            text="-",
+            clicked=lambda: self._btn_operator('-'))
         self.btn_minus.setGeometry(QtCore.QRect(60, 94, 41, 34))
         self.btn_minus.setObjectName("btn_minus")
 
-        self.btn_closing_parenthesis = QtWidgets.QPushButton(
-            Calculator, text=")")
-        self.btn_closing_parenthesis.setGeometry(QtCore.QRect(60, 174, 41, 34))
-        self.btn_closing_parenthesis.setObjectName("btn_closing_parenthesis")
+        self.btn_pi_number = QtWidgets.QPushButton(
+            Calculator, text="π")
+        self.btn_pi_number.setGeometry(QtCore.QRect(60, 174, 41, 34))
+        self.btn_pi_number.setObjectName("btn_pi_number")
 
-        self.btn_mod = QtWidgets.QPushButton(Calculator, text="mod")
+        self.btn_mod = QtWidgets.QPushButton(
+            Calculator,
+            text="mod",
+            clicked=lambda: self._btn_operator('%'))
         self.btn_mod.setGeometry(QtCore.QRect(110, 214, 41, 34))
         self.btn_mod.setObjectName("btn_mod")
 
-        self.btn_power = QtWidgets.QPushButton(Calculator)
+        self.btn_power = QtWidgets.QPushButton(
+            Calculator,
+            clicked=lambda: self._btn_operator('**'))
         self.btn_power.setGeometry(QtCore.QRect(10, 214, 42, 34))
         self.btn_power.setObjectName("btn_power")
 
@@ -329,12 +342,15 @@ class Ui_Calculator(object):
         self.btn_cos.setGeometry(QtCore.QRect(60, 254, 41, 34))
         self.btn_cos.setObjectName("btn_cos")
 
-        self.btn_opening_parenthesis = QtWidgets.QPushButton(
-            Calculator, text="(")
-        self.btn_opening_parenthesis.setGeometry(QtCore.QRect(10, 174, 41, 34))
-        self.btn_opening_parenthesis.setObjectName("btn_opening_parenthesis")
+        self.btn_euler_number = QtWidgets.QPushButton(
+            Calculator, text="e")
+        self.btn_euler_number.setGeometry(QtCore.QRect(10, 174, 41, 34))
+        self.btn_euler_number.setObjectName("btn_euler_number")
 
-        self.btn_plus = QtWidgets.QPushButton(Calculator, text="+")
+        self.btn_plus = QtWidgets.QPushButton(
+            Calculator,
+            text="+",
+            clicked=lambda: self._btn_operator('+'))
         self.btn_plus.setGeometry(QtCore.QRect(10, 94, 41, 34))
         self.btn_plus.setObjectName("btn_plus")
 
@@ -342,15 +358,24 @@ class Ui_Calculator(object):
         self.btn_sin.setGeometry(QtCore.QRect(10, 254, 41, 34))
         self.btn_sin.setObjectName("btn_sin")
 
-        self.btn_devision = QtWidgets.QPushButton(Calculator, text="÷")
+        self.btn_devision = QtWidgets.QPushButton(
+            Calculator,
+            text="÷",
+            clicked=lambda: self._btn_operator('/'))
         self.btn_devision.setGeometry(QtCore.QRect(60, 134, 41, 34))
         self.btn_devision.setObjectName("btn_devision")
 
-        self.btn_multiply = QtWidgets.QPushButton(Calculator, text="×")
+        self.btn_multiply = QtWidgets.QPushButton(
+            Calculator,
+            text="×",
+            clicked=lambda: self._btn_operator('*'))
         self.btn_multiply.setGeometry(QtCore.QRect(10, 134, 41, 34))
         self.btn_multiply.setObjectName("btn_multiply")
 
-        self.btn_precent = QtWidgets.QPushButton(Calculator, text="%")
+        self.btn_precent = QtWidgets.QPushButton(
+            Calculator,
+            text="%",
+            clicked=lambda: self._btn_operator('/100*'))
         self.btn_precent.setGeometry(QtCore.QRect(110, 174, 41, 34))
         self.btn_precent.setObjectName("btn_precent")
 
@@ -366,7 +391,10 @@ class Ui_Calculator(object):
         self.btn_tanh.setGeometry(QtCore.QRect(110, 294, 41, 34))
         self.btn_tanh.setObjectName("btn_tanh")
 
-        self.btn_equal = QtWidgets.QPushButton(Calculator, text="=")
+        self.btn_equal = QtWidgets.QPushButton(
+            Calculator,
+            text="=",
+            clicked=lambda: self._btn_equal())
         self.btn_equal.setGeometry(QtCore.QRect(260, 294, 41, 34))
         self.btn_equal.setObjectName("btn_equal")
 
@@ -379,6 +407,7 @@ class Ui_Calculator(object):
 
     def _btn_clear(self):
         self.output.setText("0")
+        self.last_number = self.last_operator = ''
 
     def _btn_remove_last(self):
         current_number = self.output.text()
@@ -387,16 +416,75 @@ class Ui_Calculator(object):
         else:
             self.output.setText('0')
 
-    def _btn_digit(self, current_number, new_number):
-        if current_number in ['0', '-0']:
-            self.output.setText(f'{current_number[:-1]+new_number}')
+    def _btn_digit(self, new_number):
+        if self.last_number != '':
+            if self.last_operator != '':
+                if self.curr_number in ['', '-']:
+                    if new_number == '.':
+                        self.curr_number = f'{self.curr_number}0.'
+                    else:
+                        self.curr_number = new_number
+                else:
+                    self.curr_number = f'{self.curr_number+new_number}'
+
+            else:
+                self.last_number = ''
+                if self.curr_number in ['', '-']:
+                    if new_number == '.':
+                        self.curr_number = f'{self.curr_number}0.'
+                    else:
+                        self.curr_number = new_number
+                else:
+                    self.curr_number = f'{self.curr_number+new_number}'
+
         else:
-            self.output.setText(f'{current_number+new_number}')
+            if self.curr_number in ['', '-']:
+                if new_number == '.':
+                    self.curr_number = f'{self.curr_number}0.'
+                else:
+                    self.curr_number = new_number
+            else:
+                self.curr_number = f'{self.curr_number+new_number}'
+
+        self.output.setText(self.curr_number)
 
     def _btn_dot(self):
-        current_number = self.output.text()
-        if '.' not in current_number:
-            self.output.setText(f'{current_number}.')
+        if '.' not in self.curr_number:
+            self._btn_digit('.')
+
+    def _btn_operator(self, operator):
+        if self.last_number != '':
+            if self.last_operator != '':
+                if self.curr_number != '':
+                    self._btn_equal()
+                    self.last_operator = operator
+                else:
+                    self.last_operator = operator
+            else:
+                self.last_operator = operator
+        else:
+            self.last_number = self.curr_number
+            self.last_operator = operator
+            self.curr_number = ''
+
+    def _btn_equal(self):
+        if self.last_number == '':
+            if self.curr_number in ['', '-', '-0.', '0.']:
+                self.last_number = '0'
+            else:
+                self.last_number = self.curr_number
+        else:
+            if self.last_operator != '':
+                if self.curr_number not in ['', '-']:
+                    if self.curr_number in ['0', '-0', '0.', '-0.']:
+                        self.curr_number = '0'
+
+                    self.last_number = eval(
+                        self.last_number+self.last_operator+self.curr_number)
+        self.last_operator = ''
+        self.curr_number = ''
+        self.last_number = str(self.last_number)
+        self.output.setText(self.last_number)
 
     def programing_simple_mode_changer(self):
         if self.simple_mode.isChecked():
@@ -422,8 +510,8 @@ class Ui_Calculator(object):
             self.btn_f.setDisabled(True)
             # Enable aritاmetic operarors
             self.btn_factorial.setEnabled(True)
-            self.btn_opening_parenthesis.setEnabled(True)
-            self.btn_closing_parenthesis.setEnabled(True)
+            self.btn_euler_number.setEnabled(True)
+            self.btn_pi_number.setEnabled(True)
             self.btn_precent.setEnabled(True)
             self.btn_power.setEnabled(True)
             self.power_label.setEnabled(True)
@@ -449,8 +537,8 @@ class Ui_Calculator(object):
             self.btn_left_shift.setEnabled(True)
             # Disable arithmetic operators
             self.btn_factorial.setDisabled(True)
-            self.btn_opening_parenthesis.setDisabled(True)
-            self.btn_closing_parenthesis.setDisabled(True)
+            self.btn_euler_number.setDisabled(True)
+            self.btn_pi_number.setDisabled(True)
             self.btn_precent.setDisabled(True)
             self.btn_power.setDisabled(True)
             self.power_label.setDisabled(True)
