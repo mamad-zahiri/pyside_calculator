@@ -499,6 +499,9 @@ class Ui_Calculator(object):
 
                     self.last_number = eval(
                         self.last_number+self.last_operator+self.curr_number)
+                else:
+                    self.last_operator = ''
+                    self._btn_equal()
         self.last_operator = ''
         self.curr_number = ''
         self.last_number = str(self.last_number)
