@@ -46,7 +46,7 @@ class Ui_Calculator(object):
         self.change_mode_buttonGroup = QtWidgets.QButtonGroup(Calculator)
         self.change_mode_buttonGroup.setObjectName("change_mode_buttonGroup")
         self.change_mode_buttonGroup.buttonClicked.connect(
-            self.programing_simple_mode_changer)
+            self._change_mode)
 
         self.programing_mode = QtWidgets.QRadioButton(
             Calculator, text="Programing")
@@ -68,7 +68,7 @@ class Ui_Calculator(object):
         self.number_base_buttonGroup = QtWidgets.QButtonGroup(Calculator)
         self.number_base_buttonGroup.setObjectName("number_base_buttonGroup")
         self.number_base_buttonGroup.buttonClicked.connect(
-            self.number_base_changer)
+            self._change_base)
 
         self.Binary = QtWidgets.QRadioButton(Calculator, text="Bin")
         self.Binary.setEnabled(True)
@@ -231,7 +231,7 @@ class Ui_Calculator(object):
         self.btn_dot = QtWidgets.QPushButton(
             Calculator,
             text=".",
-            clicked=lambda: self._btn_dot())
+            clicked=lambda: self._btn_digit('.'))
         self.btn_dot.setGeometry(QtCore.QRect(210, 294, 41, 34))
         self.btn_dot.setObjectName("btn_dot")
 
@@ -262,23 +262,38 @@ class Ui_Calculator(object):
         self.btn_remove_last.setGeometry(QtCore.QRect(260, 334, 41, 34))
         self.btn_remove_last.setObjectName("btn_remove_last")
 
-        self.btn_and = QtWidgets.QPushButton(Calculator, text="&&")
+        self.btn_and = QtWidgets.QPushButton(
+            Calculator,
+            text="&&",
+            clicked=lambda: self._btn_operator('&'))
         self.btn_and.setGeometry(QtCore.QRect(10, 334, 41, 34))
         self.btn_and.setObjectName("btn_and")
 
-        self.btn_or = QtWidgets.QPushButton(Calculator, text="|")
+        self.btn_or = QtWidgets.QPushButton(
+            Calculator,
+            text="|",
+            clicked=lambda: self._btn_operator('|'))
         self.btn_or.setGeometry(QtCore.QRect(60, 334, 41, 34))
         self.btn_or.setObjectName("btn_or")
 
-        self.btn_right_shift = QtWidgets.QPushButton(Calculator, text=">>")
+        self.btn_right_shift = QtWidgets.QPushButton(
+            Calculator,
+            text=">>",
+            clicked=lambda: self._btn_operator('>>'))
         self.btn_right_shift.setGeometry(QtCore.QRect(160, 334, 41, 34))
         self.btn_right_shift.setObjectName("btn_right_shift")
 
-        self.btn_xor = QtWidgets.QPushButton(Calculator, text="^")
+        self.btn_xor = QtWidgets.QPushButton(
+            Calculator,
+            text="^",
+            clicked=lambda: self._btn_operator('^'))
         self.btn_xor.setGeometry(QtCore.QRect(110, 334, 41, 34))
         self.btn_xor.setObjectName("btn_xor")
 
-        self.btn_left_shift = QtWidgets.QPushButton(Calculator, text="<<")
+        self.btn_left_shift = QtWidgets.QPushButton(
+            Calculator,
+            text="<<",
+            clicked=lambda: self._btn_operator('<<'))
         self.btn_left_shift.setGeometry(QtCore.QRect(210, 334, 41, 34))
         self.btn_left_shift.setObjectName("btn_left_shift")
 
@@ -435,69 +450,71 @@ class Ui_Calculator(object):
         self.btn_change_sign.setObjectName("btn_change_sign")
 
         QtCore.QMetaObject.connectSlotsByName(Calculator)
-        self.programing_simple_mode_changer()
+        self._change_mode()
 
     def _btn_clear(self):
+        self.curr_number = self.last_number = self.last_operator = ''
         self.output.setText("0")
-        self.last_number = self.last_operator = ''
 
     def _btn_remove_last(self):
-        current_number = self.output.text()
-        if len(current_number) > 1:
-            self.output.setText(current_number[:-1])
-        else:
-            self.output.setText('0')
+        # move the result of last operation to self.curr_number
+        # if remove_last pressed just after an operation
+        if self.last_operator == self.curr_number == '':
+            self.curr_number = self.last_number
+            self.last_number = ''
 
-    def _btn_digit(self, new_number):
-        if self.last_number != '':
-            if self.last_operator != '':
-                if self.curr_number in ['', '-']:
-                    if new_number == '.':
-                        self.curr_number = f'{self.curr_number}0.'
-                    else:
-                        self.curr_number = new_number
-                else:
-                    self.curr_number = f'{self.curr_number+new_number}'
+        self.curr_number = self.curr_number[:-1]  # remove last number
+        self.output.setText(self.curr_number)
 
-            else:
-                self.last_number = ''
-                if self.curr_number in ['', '-']:
-                    if new_number == '.':
-                        self.curr_number = f'{self.curr_number}0.'
-                    else:
-                        self.curr_number = new_number
+        if self.curr_number == '-' or len(self.curr_number) == 0:
+            self._btn_clear()
+
+    def _btn_digit(self, digit):
+        # check for Euler and PI constants
+        if digit in (f'{round(np.pi, 10)}', f'{round(np.e, 10)}'):
+            self.curr_number = digit
+
+        # check for decimal point
+        elif digit == '.':
+            if '.' not in self.curr_number:
+                if self.curr_number in ('', '-'):
+                    self.curr_number += '0.'
                 else:
-                    self.curr_number = f'{self.curr_number+new_number}'
+                    self.curr_number += '.'
 
         else:
-            if self.curr_number in ['', '-']:
-                if new_number == '.':
-                    self.curr_number = f'{self.curr_number}0.'
-                else:
-                    self.curr_number = new_number
+            # handle zero at the begining of numbers
+            if self.curr_number in ('0', '-0'):
+                self.curr_number = f'{self.curr_number[:-1]+digit}'
             else:
-                self.curr_number = f'{self.curr_number+new_number}'
+                self.curr_number += digit
+
+        # clear result of last operation if user try to insert number just after that
+        if self.last_operator == '':
+            self.last_number = ''
 
         self.output.setText(self.curr_number)
 
-    def _btn_dot(self):
-        if '.' not in self.curr_number:
-            self._btn_digit('.')
-
     def _btn_operator(self, operator):
-        if self.last_number != '':
-            if self.last_operator != '':
-                if self.curr_number != '':
-                    self._btn_equal()
-                    self.last_operator = operator
-                else:
-                    self.last_operator = operator
+        if self.curr_number != '':
+            if self.last_number != '':
+                # if calculator has two saved number and an operator,
+                # on press new operator it gives the result of the
+                # operatoron. like every calculators do.
+                self._btn_equal()
+
             else:
-                self.last_operator = operator
+                # move curr to last for new number
+                self.last_number = self.curr_number
+
         else:
-            self.last_number = self.curr_number
-            self.last_operator = operator
-            self.curr_number = ''
+            if self.last_number == '':
+                operator = ''
+
+        self.curr_number = ''  # clear curr_number for input new number
+        self.last_operator = operator  # set the operator
+
+        self.output.setText(self.last_number)
 
     def _btn_trigonometry(self, func):
         self._btn_equal()
@@ -515,46 +532,96 @@ class Ui_Calculator(object):
         self._btn_equal()
 
     def _btn_change_sign(self):
-        if self.curr_number != '':
-            if self.curr_number[0] == '-':
-                self.curr_number = self.curr_number[1:]
-            else:
-                self.curr_number = f'-{self.curr_number}'
+        # move the result of last operation to self.curr_number
+        # if change_sign pressed just after an operation
+        if self.last_operator == self.curr_number == '':
+            self.curr_number = self.last_number
+            self.last_number = ''
 
-        elif self.last_number != '':
-            if self.last_number[0] == '-':
-                self.last_number = self.last_number[1:]
-            else:
-                self.last_number = f'-{self.last_number}'
+        # set curr_number to '0' if empty
+        if self.curr_number == '':
+            self.curr_number = '0'
+
+        # change the curr_number sign
+        self.curr_number = self.curr_number[1:] \
+            if '-' in self.curr_number \
+            else f'-{self.curr_number}'
+
+        self.output.setText(self.curr_number)
+
+    def _btn_equal(self):
+        # convert current base to 10 if not 10
+        if self.current_number_base != 10:
+            if self.curr_number != '':
+                self.curr_number = f'{int(self.curr_number, self.current_number_base)}'
+            if self.last_number != '':
+                self.last_number = f'{int(self.last_number, self.current_number_base)}'
+
+        # ignore last_operator if curr_number is empty
+        if self.last_number != '' and self.curr_number == '':
+            self.last_operator = ''
+
+        string = f'{eval(self.last_number + self.last_operator + self.curr_number + "+0")}'
+
+        self._btn_clear()
+        # convert output to current base if base isn't 10
+        self.last_number = self.base_convert(string, 10, self.current_number_base) \
+            if self.current_number_base != 10 \
+            else string
+
+        self.output.setText(self.last_number)
+
+    def base_convert(self, number, _from, _to):
+        number = int(number, _from)  # convert number to base 10
+        sign = '-' if number < 0 else ''  # detect sign
+        number = abs(number)  # unsigning number
+
+        output = ''
+        alph = '0123456789ABCDEF'
+        while number > 0:
+            output = f'{alph[number % _to]}' + output
+            number //= _to
+
+        self.current_number_base = _to
+
+        return sign + output if output != '' else '0'
+
+    def enable_digits_for_base(self, _to):
+        digits = [self.btn_0, self.btn_1, self.btn_2, self.btn_3, self.btn_4, self.btn_5, self.btn_6, self.btn_7,
+                  self.btn_8, self.btn_9, self.btn_a, self.btn_b, self.btn_c, self.btn_d, self.btn_e, self.btn_f, ]
+
+        for x in digits[0:_to]:  # Enable related digits
+            x.setEnabled(True)
+
+        for x in digits[_to:]:  # Disable other digits
+            x.setDisabled(True)
+
+    def _change_base(self):
+        self._btn_equal()
+
+        if self.Binary.isChecked():
+            self.last_number = f'{self.base_convert(self.last_number, self.current_number_base, 2)}'
+            self.enable_digits_for_base(2)
+
+        elif self.Octal.isChecked():
+            self.last_number = f'{self.base_convert(self.last_number, self.current_number_base, 8)}'
+            self.enable_digits_for_base(8)
+
+        elif self.Decimal.isChecked():
+            self.last_number = f'{self.base_convert(self.last_number, self.current_number_base, 10)}'
+            self.enable_digits_for_base(10)
+
+        else:
+            self.last_number = f'{self.base_convert(self.last_number, self.current_number_base, 16)}'
+            self.enable_digits_for_base(16)
 
         self._btn_equal()
 
-    def _btn_equal(self):
-        if self.last_number == '':
-            if self.curr_number in ['', '-', '-0.', '0.']:
-                self.last_number = '0'
-            else:
-                self.last_number = self.curr_number
-        else:
-            if self.last_operator != '':
-                if self.curr_number not in ['', '-']:
-                    if self.curr_number in ['0', '-0', '0.', '-0.']:
-                        self.curr_number = '0'
-
-                    self.last_number = eval(
-                        self.last_number+self.last_operator+self.curr_number)
-                else:
-                    self.last_operator = ''
-                    self._btn_equal()
-        self.last_operator = ''
-        self.curr_number = ''
-        self.last_number = str(self.last_number)
-        self.output.setText(self.last_number)
-
-    def programing_simple_mode_changer(self):
+    def _change_mode(self):
         if self.simple_mode.isChecked():
+            self._btn_clear()
             # change current number to base_10
-            self.change_base(10)
+            self.Decimal.click()
             # Disable base changer
             self.Binary.setDisabled(True)
             self.Octal.setDisabled(True)
@@ -574,6 +641,10 @@ class Ui_Calculator(object):
             self.btn_e.setDisabled(True)
             self.btn_f.setDisabled(True)
             # Enable aritاmetic operarors
+            self.btn_plus.setEnabled(True)
+            self.btn_minus.setEnabled(True)
+            self.btn_devision.setEnabled(True)
+            self.btn_multiply.setEnabled(True)
             self.btn_factorial.setEnabled(True)
             self.btn_euler_number.setEnabled(True)
             self.btn_pi_number.setEnabled(True)
@@ -590,6 +661,7 @@ class Ui_Calculator(object):
             self.btn_tanh.setEnabled(True)
             self.btn_dot.setEnabled(True)
         else:
+            self.btn_clear.click()
             # Enable base changer
             self.Binary.setEnabled(True)
             self.Octal.setEnabled(True)
@@ -601,6 +673,10 @@ class Ui_Calculator(object):
             self.btn_right_shift.setEnabled(True)
             self.btn_left_shift.setEnabled(True)
             # Disable arithmetic operators
+            self.btn_plus.setDisabled(True)
+            self.btn_minus.setDisabled(True)
+            self.btn_devision.setDisabled(True)
+            self.btn_multiply.setDisabled(True)
             self.btn_factorial.setDisabled(True)
             self.btn_euler_number.setDisabled(True)
             self.btn_pi_number.setDisabled(True)
@@ -617,131 +693,18 @@ class Ui_Calculator(object):
             self.btn_tanh.setDisabled(True)
             self.btn_dot.setDisabled(True)
 
-    def change_base(self, _to: int):
-        _from = self.current_number_base
-        is_positive = True
-        current_number = self.output.text()
-
-        if current_number[0] == '-':
-            is_positive = False
-
-        current_number = int(current_number, _from)
-        if is_positive:
-            if _to == 2:
-                self.output.setText(f'{bin(current_number)[2:]}')
-            elif _to == 8:
-                self.output.setText(f'{oct(current_number)[2:]}')
-            elif _to == 10:
-                self.output.setText(f'{current_number}')
-            else:
-                self.output.setText(f'{hex(current_number)[2:]}')
-        else:
-            if _to == 2:
-                self.output.setText(f'-{bin(current_number)[3:]}')
-            elif _to == 8:
-                self.output.setText(f'-{oct(current_number)[3:]}')
-            elif _to == 10:
-                self.output.setText(f'{current_number}')
-            else:
-                self.output.setText(f'-{hex(current_number)[3:]}')
-        # change current number base
-        self.current_number_base = _to
-
-    def number_base_changer(self):
-        if self.Binary.isChecked():
-            # change current number to new base
-            self.change_base(2)
-            # Enable related buttons
-            self.btn_0.setEnabled(True)
-            self.btn_1.setEnabled(True)
-            # Disable other digits
-            self.btn_2.setDisabled(True)
-            self.btn_3.setDisabled(True)
-            self.btn_4.setDisabled(True)
-            self.btn_5.setDisabled(True)
-            self.btn_6.setDisabled(True)
-            self.btn_7.setDisabled(True)
-            self.btn_8.setDisabled(True)
-            self.btn_9.setDisabled(True)
-            self.btn_a.setDisabled(True)
-            self.btn_b.setDisabled(True)
-            self.btn_c.setDisabled(True)
-            self.btn_d.setDisabled(True)
-            self.btn_e.setDisabled(True)
-            self.btn_f.setDisabled(True)
-
-        elif self.Octal.isChecked():
-            # change current number to new base
-            self.change_base(8)
-            # Enable related buttons
-            self.btn_0.setEnabled(True)
-            self.btn_1.setEnabled(True)
-            self.btn_2.setEnabled(True)
-            self.btn_3.setEnabled(True)
-            self.btn_4.setEnabled(True)
-            self.btn_5.setEnabled(True)
-            self.btn_6.setEnabled(True)
-            self.btn_7.setEnabled(True)
-            # Disable other digits
-            self.btn_8.setDisabled(True)
-            self.btn_9.setDisabled(True)
-            self.btn_a.setDisabled(True)
-            self.btn_b.setDisabled(True)
-            self.btn_c.setDisabled(True)
-            self.btn_d.setDisabled(True)
-            self.btn_e.setDisabled(True)
-            self.btn_f.setDisabled(True)
-
-        elif self.Decimal.isChecked():
-            # change current number to new base
-            self.change_base(10)
-            # Enable related buttons
-            self.btn_0.setEnabled(True)
-            self.btn_1.setEnabled(True)
-            self.btn_2.setEnabled(True)
-            self.btn_3.setEnabled(True)
-            self.btn_4.setEnabled(True)
-            self.btn_5.setEnabled(True)
-            self.btn_6.setEnabled(True)
-            self.btn_7.setEnabled(True)
-            self.btn_8.setEnabled(True)
-            self.btn_9.setEnabled(True)
-            # Disable other digits
-            self.btn_a.setDisabled(True)
-            self.btn_b.setDisabled(True)
-            self.btn_c.setDisabled(True)
-            self.btn_d.setDisabled(True)
-            self.btn_e.setDisabled(True)
-            self.btn_f.setDisabled(True)
-
-        else:
-            # change current number to new base
-            self.change_base(16)
-            # Enable related buttons
-            self.btn_0.setEnabled(True)
-            self.btn_1.setEnabled(True)
-            self.btn_2.setEnabled(True)
-            self.btn_3.setEnabled(True)
-            self.btn_4.setEnabled(True)
-            self.btn_5.setEnabled(True)
-            self.btn_6.setEnabled(True)
-            self.btn_7.setEnabled(True)
-            self.btn_8.setEnabled(True)
-            self.btn_9.setEnabled(True)
-            self.btn_a.setEnabled(True)
-            self.btn_b.setEnabled(True)
-            self.btn_c.setEnabled(True)
-            self.btn_d.setEnabled(True)
-            self.btn_e.setEnabled(True)
-            self.btn_f.setEnabled(True)
-
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle("Fusion")
+
     Calculator = QtWidgets.QWidget()
+
     ui = Ui_Calculator()
     ui.setupUi(Calculator)
+
     Calculator.show()
+
     sys.exit(app.exec_())
